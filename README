@@ -1,0 +1,12 @@
+meta-virt
+===========
+
+This layer provides support for building Xen, Libvirt, OpenvSwitch et.c.
+and associated packages necessary for constructing virtuaized solutions for 
+Openembedded based distros.
+
+This layer is maintained by ENEA Software AB
+
+When sending single patches, please using something like:
+'git send-email -1 --to david.nystrom@enea.com --cc=yocto@yoctoproject.org --subject-prefix=meta-virt][PATCH'
+
