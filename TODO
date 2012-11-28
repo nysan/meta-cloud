@@ -1,0 +1,19 @@
+The end goal with this layer is to create two separate images,
+and OpenStack controller image, and an OpenStack compute image.
+
+Final format is TBD, but for starters a bootable usb stick image will 
+suffice. The main goal is to have a reasonably quick setup of an 
+OpenEmbedded based cloud solution.
+
+On the recipe TODO list:
+
+* nova
+* glance
+* swift
+* euca2ools
+* rabbitMQ
+* keystone
+* quantum
+
+Bugfix todo list:
+* dmtcp recipe not functional 

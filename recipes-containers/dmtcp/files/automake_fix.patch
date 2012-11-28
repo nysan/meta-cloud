@@ -1,0 +1,13 @@
+diff -Naur dmtcp-1.2.6.old/dmtcp/src/Makefile.am dmtcp-1.2.6/dmtcp/src/Makefile.am
+--- dmtcp-1.2.6.old/dmtcp/src/Makefile.am	2012-11-27 10:29:17.515536634 +0100
++++ dmtcp-1.2.6/dmtcp/src/Makefile.am	2012-11-27 10:30:15.211538179 +0100
+@@ -21,7 +21,8 @@
+ 		   libjalib.a
+ bin_PROGRAMS = dmtcp_checkpoint dmtcp_command dmtcp_coordinator \
+ 	       dmtcp_restart dmtcp_inspector dmtcp_nocheckpoint
+-pkglib_PROGRAMS = dmtcphijack.so libdmtcpaware.so.1.0.0
++programfilesdir = $(pkglibdir)
++programfiles_PROGRAMS = dmtcphijack.so libdmtcpaware.so.1.0.0
+ include_HEADERS = dmtcpaware.h
+ lib_LIBRARIES = libdmtcpaware.a
+ 

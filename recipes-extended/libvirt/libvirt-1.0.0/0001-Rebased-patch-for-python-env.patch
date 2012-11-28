@@ -1,0 +1,53 @@
+From 533c37a03d3f1355dc762da80eb9a50947d2c7d0 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?David=20Nystr=C3=B6m?= <david.nystrom@enea.com>
+Date: Mon, 26 Nov 2012 10:20:57 +0100
+Subject: [PATCH] Rebased patch for python env
+
+---
+ configure.ac |   24 ++++++++++--------------
+ 1 file changed, 10 insertions(+), 14 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index 9108ea8..723e525 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -2442,26 +2442,22 @@ if test "$with_python" != "no" ; then
+         AM_PATH_PYTHON(,, [:])
+ 
+         if test "$PYTHON" != : ; then
+-            PYTHON_CONFIG="$PYTHON-config"
+-
+-            if test -x "$PYTHON_CONFIG"
++            if test -r `$as_dirname $PYTHON`/../include/python$PYTHON_VERSION/Python.h
++            then
++                PYTHON_INCLUDES=-I`$as_dirname $PYTHON`/../include/python$PYTHON_VERSION
++            elif test -r $PYTHON_EXEC_PREFIX/include/python$PYTHON_VERSION/Python.h
+             then
+-                PYTHON_INCLUDES=`$PYTHON_CONFIG --includes`
++                PYTHON_INCLUDES=-I$PYTHON_EXEC_PREFIX/include/python$PYTHON_VERSION
+             else
+-                if test -r $PYTHON_EXEC_PREFIX/include/python$PYTHON_VERSION/Python.h
++                if test -r $prefix/include/python$PYTHON_VERSION/Python.h
+                 then
+-                    PYTHON_INCLUDES=-I$PYTHON_EXEC_PREFIX/include/python$PYTHON_VERSION
++                    PYTHON_INCLUDES=-I$prefix/include/python$PYTHON_VERSION
+                 else
+-                    if test -r $prefix/include/python$PYTHON_VERSION/Python.h
++                    if test -r /usr/include/python$PYTHON_VERSION/Python.h
+                     then
+-                        PYTHON_INCLUDES=-I$prefix/include/python$PYTHON_VERSION
++                        PYTHON_INCLUDES=-I/usr/include/python$PYTHON_VERSION
+                     else
+-                        if test -r /usr/include/python$PYTHON_VERSION/Python.h
+-                        then
+-                            PYTHON_INCLUDES=-I/usr/include/python$PYTHON_VERSION
+-                        else
+-                            AC_MSG_ERROR([You must install python-devel to build Python bindings])
+-                        fi
++                        AC_MSG_ERROR([You must install python-devel to build Python bindings])
+                     fi
+                 fi
+             fi
+-- 
+1.7.9.5
+

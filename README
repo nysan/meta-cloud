@@ -1,12 +1,50 @@
-meta-virt
+meta-cloud
 ===========
 
-This layer provides support for building Xen, Libvirt, OpenvSwitch et.c.
-and associated packages necessary for constructing virtuaized solutions for 
-Openembedded based distros.
+This layer provides support for building KVM, Libvirt, OpenvSwitch et.c.
+and associated packages necessary for constructing virtualized solutions for 
+Openembedded based distros. End goal is some neato OpenStack rootfs:es, 
+hopefully without too much manual work after booting the images to get a
+minimal setup of OpenStack.
 
-This layer is maintained by ENEA Software AB
+Bit's and pieces taken from the meta-xen layer.
 
+This layer is far from "fully operational", and if you want to contribute, 
+see below: 
 When sending single patches, please using something like:
-'git send-email -1 --to david.nystrom@enea.com --cc=yocto@yoctoproject.org --subject-prefix=meta-virt][PATCH'
+'git send-email -1 --to david.nystrom@enea.com --cc=yocto@yoctoproject.org --subject-prefix=meta-cloud][PATCH'
 
+
+Tested on x86-64:
+--
+Build Configuration:
+BB_VERSION        = "1.16.0"
+TARGET_ARCH       = "x86_64"
+TARGET_OS         = "linux"
+MACHINE           = "qemux86-64"
+DISTRO            = "poky"
+DISTRO_VERSION    = "1.3"
+TUNE_FEATURES     = "m64"
+TARGET_FPU        = ""
+meta              
+meta-yocto        
+meta-yocto-bsp    = "danny:27af23e65f63b41962a7cfddba9e9372d5212396"
+meta-oe           = "danny:f8ad0760abf8055bac27036853c56f56b40a36c7"
+meta-cloud        = "master:296a793b2eab57275a3e85424da913483c43e2a4"
+
+
+Layer dependencies: 
+--
+meta-oe:
+git clone -b danny git://git.openembedded.org/meta-openembedded
+BBFILE_PRIORITY_openembedded-layer = "4"
+
+meta & meta-yocto
+git clone -b danny git://git.yoctoproject.org/poky
+BBFILE_PRIORITY_core = "5"
+
+0. Modify BBFILE_PRIORITY of meta-openembedded to above.
+1. Add: 'PREFERRED_VERSION_libnl = "3%"' to your local.conf.
+2. Add: 'PREFERRED_PROVIDER_jpeg = "jpeg"' to your local.conf
+3. Add: 'PREFERRED_PROVIDER_jpeg-native = "jpeg-native"' to your local.conf
+4. bitbake cloud-image-controller

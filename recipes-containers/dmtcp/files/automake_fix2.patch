@@ -1,0 +1,10 @@
+diff -Naur dmtcp-1.2.6.old/Makefile.in dmtcp-1.2.6/Makefile.in
+--- dmtcp-1.2.6.old/Makefile.in	2012-11-28 13:12:13.925078845 +0100
++++ dmtcp-1.2.6/Makefile.in	2012-11-28 13:12:40.213079549 +0100
+@@ -303,3 +303,5 @@
+ 	display-build-env display-release display-config build \
+ 	mtcp dmtcp plugin \
+ 	clean distclean bin dmtcpaware examples dmtcp_noexamples
++
++am--refresh:
+\ No newline at end of file
