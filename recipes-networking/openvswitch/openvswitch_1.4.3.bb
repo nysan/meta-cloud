@@ -12,7 +12,7 @@ RRECOMMENDS = "${PN}-controller ${PN}-switch ${PN}-brcompat"
 
 PR = "r0"
 
-SRC_URI = "http://openvswitch.org/releases/openvswitch-1.4.3.tar.gz \
+SRC_URI = "http://openvswitch.org/releases/openvswitch-${PV}.tar.gz \
 	file://openvswitch-switch \
 	file://openvswitch-switch-setup \
 	file://openvswitch-controller \
@@ -28,7 +28,6 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=49eeb5acb1f5e510f12c44f176c42253"
 # distro layers can enable with EXTRA_OECONF_pn_openvswitch += ""
 # EXTRA_OECONF = "--with-linux=${STAGING_KERNEL_DIR} KARCH=${TARGET_ARCH}"
 
-S = "${WORKDIR}/${PN}-${PV}"
 
 PACKAGES =+ "${PN}-controller ${PN}-switch ${PN}-brcompat"
 
@@ -46,7 +45,7 @@ inherit autotools update-rc.d
 
 INITSCRIPT_PACKAGES = "${PN}-switch"
 INITSCRIPT_NAME_${PN}-switch = "openvswitch-switch"
-INITSCRIPT_PARAMS_${PN}-switch = "defaults 72"
+INITSCRIPT_PARAMS_${PN}-switch = "defaults 71"
 
 INITSCRIPT_PACKAGES = "${PN}-controller"
 INITSCRIPT_NAME_${PN}-controller = "openvswitch-controller"
@@ -61,5 +60,4 @@ do_install_append() {
 	install -d ${D}/${sysconfdir}/init.d/
 	install -m 755 ${WORKDIR}/openvswitch-controller ${D}/${sysconfdir}/init.d/openvswitch-controller
 	install -m 755 ${WORKDIR}/openvswitch-switch ${D}/${sysconfdir}/init.d/openvswitch-switch
-
 }
