@@ -5,10 +5,10 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=fb919cc88dbe06ec0b0bd50e001ccf1f"
 SECTION = "console/tools"
 PR = "r0"
 
-DEPENDS="bridge-utils gnutls libxml2 lvm2 avahi polkit parted curl libpcap util-linux e2fsprogs pm-utils iptables ebtables dnsmasq yajl libnl"
-PREFERRED_VERSION_libnl = "3.2.9"
+DEPENDS="bridge-utils gnutls libxml2 lvm2 avahi polkit parted curl libpcap util-linux e2fsprogs \
+		      pm-utils iptables ebtables dnsmasq yajl libnl"
 
-RDEPENDS_libvirt-libvirtd = "bridge-utils iptables pm-utils dnsmasq"
+RDEPENDS_libvirt-libvirtd = "bridge-utils iptables pm-utils dnsmasq openbsd-netcat"
 
 SRC_URI = "http://libvirt.org/sources/libvirt-${PV}.tar.gz \
 	file://libvirtd.sh \
@@ -18,10 +18,6 @@ SRC_URI[md5sum] = "7c8b006de7338e30866bb56738803b21"
 SRC_URI[sha256sum] = "14c8a30ebfb939c82cab5f759a95d09646b43b4210e45490e92459ae65123076"
 
 inherit autotools gettext update-rc.d
-
-# Let configure probe for whatever it needs
-# Kill libnl dependency
-#EXTRA_OECONF += "--with-macvtap=no"
 
 CACHED_CONFIGUREVARS += "\
 ac_cv_path_XMLLINT=/usr/bin/xmllint \
