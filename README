@@ -1,11 +1,15 @@
 meta-cloud
 ===========
 
-This layer provides support for building KVM, Libvirt, OpenvSwitch et.c.
-and associated packages necessary for constructing virtualized solutions for 
-Openembedded based distros. End goal is some neato OpenStack rootfs:es, 
-hopefully without too much manual work after booting the images to get a
-minimal setup of OpenStack.
+
+==========================================================
+
+NOTICE: 
+
+This layer is discintinued, and development has moved to 
+git@git.yoctoproject.org:meta-virtualization
+
+==========================================================
 
 Bit's and pieces taken from the meta-xen layer.
 
