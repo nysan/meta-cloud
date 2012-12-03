@@ -4,13 +4,14 @@ HOMEPAGE = "http://openvswitch.org/"
 SECTION = "networking"
 LICENSE = "Apache-2"
 
-DEPENDS = "bridge-utils openssl"
-RDEPENDS = "util-linux-uuidgen util-linux-libuuid"
-RDEPENDS_${PN}-controller = "lsb"
+DEPENDS += "bridge-utils openssl python"
+RDEPENDS_${PN} += "util-linux-uuidgen util-linux-libuuid"
+RDEPENDS_${PN}-controller = "${PN} lsb ${PN}-pki"
+RDEPENDS_${PN}-switch = "${PN} python openssh procps util-linux-uuidgen"
+RDEPENDS_${PN}-pki = "${PN}"
+RDEPENDS_${PN}-brcompat = "${PN} ${PN}-switch"
 
-RRECOMMENDS = "${PN}-controller ${PN}-switch ${PN}-brcompat"
-
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://openvswitch.org/releases/openvswitch-${PV}.tar.gz \
 	file://openvswitch-switch \
@@ -28,11 +29,12 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=49eeb5acb1f5e510f12c44f176c42253"
 # distro layers can enable with EXTRA_OECONF_pn_openvswitch += ""
 # EXTRA_OECONF = "--with-linux=${STAGING_KERNEL_DIR} KARCH=${TARGET_ARCH}"
 
-
-PACKAGES =+ "${PN}-controller ${PN}-switch ${PN}-brcompat"
+ALLOW_EMPTY_${PN}-pki = "1"
+PACKAGES =+ "${PN}-controller ${PN}-switch ${PN}-brcompat ${PN}-pki"
 
 FILES_${PN}-controller = "${sysconfdir}/init.d/openvswitch-controller \
 	${sysconfdir}/default/openvswitch-controller \
+	${sysconfdir}/openvswitch-controller \
 	${bindir}/ovs-controller"
 
 FILES_${PN}-brcompat = "${sbindir}/ovs-brcompatd"
@@ -40,12 +42,11 @@ FILES_${PN}-brcompat = "${sbindir}/ovs-brcompatd"
 FILES_${PN}-switch = "${sysconfdir}/init.d/openvswitch-switch \
 		   ${sysconfdir}/default/openvswitch-switch \
 		   "
-
 inherit autotools update-rc.d
 
 INITSCRIPT_PACKAGES = "${PN}-switch"
 INITSCRIPT_NAME_${PN}-switch = "openvswitch-switch"
-INITSCRIPT_PARAMS_${PN}-switch = "defaults 71"
+INITSCRIPT_PARAMS_${PN}-switch = "defaults 72"
 
 INITSCRIPT_PACKAGES = "${PN}-controller"
 INITSCRIPT_NAME_${PN}-controller = "openvswitch-controller"
@@ -60,4 +61,37 @@ do_install_append() {
 	install -d ${D}/${sysconfdir}/init.d/
 	install -m 755 ${WORKDIR}/openvswitch-controller ${D}/${sysconfdir}/init.d/openvswitch-controller
 	install -m 755 ${WORKDIR}/openvswitch-switch ${D}/${sysconfdir}/init.d/openvswitch-switch
+	true || rm -fr ${D}/${datadir}/${PN}/pki
+}
+
+pkg_postinst_${PN}-pki () {
+	# can't do this offline
+        if [ "x$D" != "x" ]; then
+                exit 1
+        fi
+	if test ! -d $D/${datadir}/${PN}/pki; then
+            ovs-pki init --dir=$D/${datadir}/${PN}/pki
+        fi
+}
+
+pkg_postinst_${PN}-controller () {
+        # can't do this offline
+        if [ "x$D" != "x" ]; then
+                exit 1
+        fi
+	
+	cd $D/${sysconfdir}/openvswitch-controller
+        if ! test -e cacert.pem; then
+            ln -s $D/${datadir}/${PN}/pki/switchca/cacert.pem cacert.pem
+        fi
+        if ! test -e privkey.pem || ! test -e cert.pem; then
+            oldumask=$(umask)
+            umask 077
+            ovs-pki req+sign --dir=$D/${datadir}/${PN}/pki tmp controller >/dev/null
+            mv tmp-privkey.pem privkey.pem
+            mv tmp-cert.pem cert.pem
+            mv tmp-req.pem req.pem
+            chmod go+r cert.pem req.pem
+            umask $oldumask
+        fi
 }

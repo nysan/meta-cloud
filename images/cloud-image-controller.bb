@@ -23,5 +23,6 @@ IMAGE_INSTALL = "\
     "
 
 inherit core-image
+inherit image-vmdk
 
-IMAGE_FSTYPES += "tar.gz"
+IMAGE_FSTYPES += "vmdk tar.gz"
